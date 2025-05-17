@@ -105,11 +105,14 @@
             >
               Mensagem apagada em {{ formatarData(mensagem.updatedAt, 'dd/MM/yyyy') }}.
             </div>
-            <div
-              v-if="isGroupLabel(mensagem)"
-              class="q-mb-sm"
-              style="display: flex; color: rgb(59 23 251); fontWeight: 500;"
-            >
+            <div v-if="isGroupLabel(mensagem)"
+                 class="q-mb-sm"
+                 style="display: flex; align-items: center; color: rgb(59 23 251); fontWeight: 500;">
+              <q-avatar v-if="mensagem.contact && mensagem.contact.profilePicUrl"
+                        size="40px"
+                        class="q-mr-sm">
+                <img :src="mensagem.contact.profilePicUrl" alt="Profile Picture">
+              </q-avatar>
               {{ isGroupLabel(mensagem) }}
             </div>
             <div v-if="mensagem.quotedMsg" :class="{ textContentItem: !mensagem.isDeleted, textContentItemDeleted: mensagem.isDeleted }" @click="focarMensagem(mensagem.quotedMsg)">
