@@ -112,15 +112,10 @@
             >
               {{ isGroupLabel(mensagem) }}
             </div>
-            <div
-              v-if="mensagem.quotedMsg"
-              :class="{ 'textContentItem': !mensagem.isDeleted, 'textContentItemDeleted': mensagem.isDeleted }"
-            >
+            <div v-if="mensagem.quotedMsg" :class="{ textContentItem: !mensagem.isDeleted, textContentItemDeleted: mensagem.isDeleted }" @click="focarMensagem(mensagem.quotedMsg)">
               <MensagemRespondida
                 style="max-width: 240px; max-height: 150px"
                 class="row justify-center"
-                @mensagem-respondida:focar-mensagem="f
-                                                                                                                carMensagem"
                 :mensagem="mensagem.quotedMsg"
               />
             </div>
