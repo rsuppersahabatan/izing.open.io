@@ -260,6 +260,9 @@
               >
               </video>
             </template>
+            <div v-if="mensagem.mediaType === 'reaction'" class="reaction-container q-mt-xs">
+              {{ mensagem.body }}
+            </div>
             <template v-if=" !['audio', 'vcard', 'image', 'video'].includes(mensagem.mediaType) && mensagem.mediaUrl ">
               <div class="text-center full-width hide-scrollbar no-scroll">
                 <iframe
@@ -312,7 +315,7 @@
             </template>
             <div
               v-linkified
-              v-if=" !['vcard', 'application', 'audio'].includes(mensagem.mediaType) "
+              v-if=" !['vcard', 'application', 'audio', 'reaction'].includes(mensagem.mediaType) "
               :class=" { 'q-mt-sm': mensagem.mediaType !== 'chat' } "
               class="q-message-container row items-end no-wrap"
             >
@@ -589,5 +592,15 @@ export default {
 .checkbox-encaminhar-left {
   left: -35px;
   z-index: 99999;
+}
+
+.reaction-container {
+  font-size: 0.75rem;
+  color: #606060;
+  margin-top: 8px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  display: inline-block;
 }
 </style>
