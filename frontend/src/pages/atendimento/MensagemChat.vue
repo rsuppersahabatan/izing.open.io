@@ -94,10 +94,10 @@
               </q-tooltip>
             </q-icon>
             <div v-if="mensagem.edited" class="text-italic">
-            Editada: {{ mensagem.edited }}
+              Editada: {{ mensagem.edited }}
             </div>
             <div v-if="mensagem.edited" class="text-italic">
-             Mensagem anterior:<br>
+              Mensagem anterior:<br>
             </div>
             <div
               v-if="mensagem.isDeleted"
@@ -191,33 +191,29 @@
               size="1.2em"
               :color=" mensagem.ack >= 3 ? 'blue-12' : '' "
             />
-            <template v-if=" mensagem.mediaType === 'audio' ">
-              <div style="width: 330px; heigth: 300px">
-                <audio
-                  class="q-mt-md full-width"
-                  controls
-                  ref="audioMessage"
-                  controlsList="nodownload volume novolume"
-                >
-                  <source :src="mensagem.mediaUrl" type="audio/mp3" />
-                </audio>
-              </div>
+            <template v-if="mensagem.mediaType === 'audio'">
+              <AudioVisualizer
+                :url="mensagem.mediaUrl"
+                :contact="mensagem.contact"
+                :fromMe="mensagem.fromMe"
+                :avatar-src="mensagem.fromMe ? $store.state.usuario?.profileImage : mensagem.contact?.profilePicUrl"
+              />
             </template>
             <template v-if=" mensagem.mediaType === 'vcard' ">
-                <div style="min-width: 250px;">
+              <div style="min-width: 250px;">
                 <ContatoCard
-                :mensagem="mensagem"
-                @openContactModal="openContactModal"
+                  :mensagem="mensagem"
+                  @openContactModal="openContactModal"
                 />
                 <ContatoModal
-                :value="modalContato"
-                :contact="currentContact"
-                @close="closeModal"
-                @saveContact="saveContact"
+                  :value="modalContato"
+                  :contact="currentContact"
+                  @close="closeModal"
+                  @saveContact="saveContact"
                 />
-                </div>
+              </div>
             </template>
-              <template v-if="mensagem.mediaType === 'location'">
+            <template v-if="mensagem.mediaType === 'location'">
               <q-img
                 @click=" urlMedia = mensagem.mediaUrl; abrirModalImagem = false "
                 src="../../assets/localizacao.png"
@@ -228,7 +224,7 @@
                 style="cursor: pointer;"
               />
               <VueEasyLightbox moveDisabled :visible="abrirModalImagem" :imgs="urlMedia" :index="mensagem.ticketId || 1" @hide="abrirModalImagem = false" />
-              </template>
+            </template>
             <template v-if=" mensagem.mediaType === 'image' ">
               <!-- @click="buscarImageCors(mensagem.mediaUrl)" -->
               <q-img
@@ -327,20 +323,20 @@
         </q-chat-message>
       </template>
     </transition-group>
-<q-dialog v-model="showModaledit">
-  <q-card>
-    <q-card-section>
-      <div class="text-h6">Editar Mensagem</div>
-    </q-card-section>
-    <q-card-section>
-      <q-input filled v-model="mensagemAtual.body" label="Mensagem" />
-    </q-card-section>
-    <q-card-actions align="right">
-      <q-btn label="Cancelar" color="negative" v-close-popup />
-      <q-btn label="Salvar" color="primary" @click="salvarMensagem" />
-    </q-card-actions>
-  </q-card>
-</q-dialog>
+    <q-dialog v-model="showModaledit">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Editar Mensagem</div>
+        </q-card-section>
+        <q-card-section>
+          <q-input filled v-model="mensagemAtual.body" label="Mensagem" />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn label="Cancelar" color="negative" v-close-popup />
+          <q-btn label="Salvar" color="primary" @click="salvarMensagem" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -351,6 +347,7 @@ import VueEasyLightbox from 'vue-easy-lightbox'
 import MensagemRespondida from './MensagemRespondida'
 import ContatoCard from './ContatoCard.vue'
 import ContatoModal from './ContatoModal.vue'
+import AudioVisualizer from '../../components/AudioVisualizer.vue'
 const downloadImageCors = axios.create({
   baseURL: process.env.VUE_URL_API,
   timeout: 20000,
@@ -419,7 +416,8 @@ export default {
     VueEasyLightbox,
     MensagemRespondida,
     ContatoCard,
-    ContatoModal
+    ContatoModal,
+    AudioVisualizer
   },
   methods: {
     openContactModal (contact) {
