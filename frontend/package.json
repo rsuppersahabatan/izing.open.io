@@ -8,6 +8,7 @@
   "license": "AGPL-3.0-or-later",
   "github": "https://github.com/cleitonme/izing.open.io",
   "scripts": {
+    "fix": "eslint --ext .js,.vue ./ --fix",
     "start": "pm2 start server.js --name izing-frontend",
     "stop": "pm2 stop server.js --name izing-frontend",
     "build": "export NODE_OPTIONS=--openssl-legacy-provider && npx quasar build -P -m pwa"
