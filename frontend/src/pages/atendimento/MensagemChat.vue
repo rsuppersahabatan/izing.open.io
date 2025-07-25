@@ -105,7 +105,7 @@
             >
               Mensagem apagada em {{ formatarData(mensagem.updatedAt, 'dd/MM/yyyy') }}.
             </div>
-            <div v-if="isGroupLabel(mensagem)"
+            <div v-if="isGroupLabel(mensagem) && !mensagem.fromMe"
                  class="q-mb-sm"
                  style="display: flex; align-items: center; color: rgb(59 23 251); fontWeight: 500;">
               <q-avatar v-if="mensagem.contact && mensagem.contact.profilePicUrl"
