@@ -442,6 +442,7 @@ export default {
       abrirFilePicker: false,
       abrirModalPreviewImagem: false,
       isRecordingAudio: false,
+      isSending: false,
       urlMediaPreview: {
         title: '',
         src: ''
@@ -645,6 +646,9 @@ export default {
         this.$notificarErro('Para agendar uma mensagem, informe o campo Data/Hora Agendamento.')
         return
       }
+      if (this.isSending) return
+
+      this.isSending = true
       this.loading = true
       const ticketId = this.ticketFocado.id
       const message = !this.cMostrarEnvioArquivo
@@ -673,6 +677,7 @@ export default {
       }
       this.isRecordingAudio = false
       this.loading = false
+      this.isSending = false
       setTimeout(() => {
         this.$refs.inputEnvioMensagem.focus()
       }, 300)
