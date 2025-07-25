@@ -1,7 +1,6 @@
 import { Op } from "sequelize";
 // import { initInstaBot } from "../../libs/InstaBot";
 import Whatsapp from "../../models/Whatsapp";
-import { StartInstaBotSession } from "../InstagramBotServices/StartInstaBotSession";
 import { StartTbotSession } from "../TbotServices/StartTbotSession";
 import { StartWaba360 } from "../WABA360/StartWaba360";
 import { StartWhatsAppSession } from "./StartWhatsAppSession";
@@ -38,7 +37,7 @@ export const StartAllWhatsAppsSessions = async (): Promise<void> => {
   const telegramSessions = whatsapps.filter(
     w => w.type === "telegram" && !!w.tokenTelegram
   );
-  const instagramSessions = whatsapps.filter(w => w.type === "instagram");
+
   const waba360Sessions = whatsapps.filter(w => w.type === "waba");
 
   if (whatsappSessions.length > 0) {
@@ -57,14 +56,6 @@ export const StartAllWhatsAppsSessions = async (): Promise<void> => {
     waba360Sessions.forEach(channel => {
       if (channel.tokenAPI && channel.wabaBSP === "360") {
         StartWaba360(channel);
-      }
-    });
-  }
-
-  if (instagramSessions.length > 0) {
-    instagramSessions.forEach(channel => {
-      if (channel.instagramKey) {
-        StartInstaBotSession(channel);
       }
     });
   }

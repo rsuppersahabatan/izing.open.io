@@ -5,7 +5,6 @@ import { getIO } from "../../libs/socket";
 import wbotMonitor from "./wbotMonitor";
 import { logger } from "../../utils/logger";
 import AppError from "../../errors/AppError";
-import { StartInstaBotSession } from "../InstagramBotServices/StartInstaBotSession";
 import { StartTbotSession } from "../TbotServices/StartTbotSession";
 import { StartWaba360 } from "../WABA360/StartWaba360";
 
@@ -29,10 +28,6 @@ export const StartWhatsAppSession = async (
 
     if (whatsapp.type === "telegram") {
       StartTbotSession(whatsapp);
-    }
-
-    if (whatsapp.type === "instagram") {
-      StartInstaBotSession(whatsapp);
     }
 
     if (whatsapp.type === "waba") {
