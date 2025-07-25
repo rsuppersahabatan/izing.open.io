@@ -6,7 +6,6 @@ import wbotMonitor from "./wbotMonitor";
 import { logger } from "../../utils/logger";
 import AppError from "../../errors/AppError";
 import { StartTbotSession } from "../TbotServices/StartTbotSession";
-import { StartWaba360 } from "../WABA360/StartWaba360";
 
 export const StartWhatsAppSession = async (
   whatsapp: Whatsapp
@@ -30,11 +29,6 @@ export const StartWhatsAppSession = async (
       StartTbotSession(whatsapp);
     }
 
-    if (whatsapp.type === "waba") {
-      if (whatsapp.wabaBSP === "360") {
-        StartWaba360(whatsapp);
-      }
-    }
   } catch (err) {
     logger.error(`StartWhatsAppSession | Error: ${err}`);
     throw new AppError("ERR_START_SESSION", 404);
