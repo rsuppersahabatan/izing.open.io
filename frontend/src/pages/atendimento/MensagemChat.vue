@@ -160,6 +160,23 @@
                   >
                     <q-item-section>Marcar (encaminhar várias)</q-item-section>
                   </q-item>
+
+                  <q-item
+                    clickable
+                    @click="
+                          mensagemReacao = mensagem
+                          modalEmojiOpen = true
+                        "
+                    v-if="
+                          ticketFocado.channel &&
+                          ['whatsapp'].includes(
+                            ticketFocado.channel
+                          )
+                        "
+                  >
+                    <q-item-section>Reagir</q-item-section>
+                  </q-item>
+
                   <q-item
                     @click=" AbrirmodaleditarMensagem(mensagem) "
                     clickable
@@ -185,7 +202,7 @@
               </q-menu>
             </q-btn>
             <q-icon
-              v-if=" mensagem.fromMe "
+              v-if="mensagem.fromMe && mensagem.mediaType !== 'reaction'"
               class="absolute-bottom-right q-pr-xs q-pb-xs"
               :name=" ackIcons[mensagem.ack] "
               size="1.2em"
@@ -326,6 +343,42 @@
         </q-chat-message>
       </template>
     </transition-group>
+
+    <q-dialog v-model="modalEmojiOpen">
+      <q-card>
+        <q-card-section class="row q-gutter-sm">
+          <q-btn
+            v-for="emoji in principaisEmojis"
+            :key="emoji"
+            flat
+            @click="selectEmoji(emoji, mensagemReacao)"
+          >
+            {{ emoji }}
+          </q-btn>
+
+          <!-- Botão circular com o ícone "+" -->
+          <q-btn
+            flat
+            round
+            icon="add"
+            size="sm"
+            class="q-ml-sm"
+            @click="expandirEmojis = !expandirEmojis"
+          />
+
+          <div v-if="expandirEmojis">
+            <VEmojiPicker
+              style="width: 40vw"
+              :showSearch="true"
+              :emojisByRow="calculateEmojisByRow()"
+              lang="pt-BR"
+              @select="onInsertSelectEmoji"
+            />
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
     <q-dialog v-model="showModaledit">
       <q-card>
         <q-card-section>
@@ -351,6 +404,7 @@ import MensagemRespondida from './MensagemRespondida'
 import ContatoCard from './ContatoCard.vue'
 import ContatoModal from './ContatoModal.vue'
 import AudioVisualizer from '../../components/AudioVisualizer.vue'
+import { VEmojiPicker } from 'v-emoji-picker'
 const downloadImageCors = axios.create({
   baseURL: process.env.VUE_URL_API,
   timeout: 20000,
@@ -358,7 +412,7 @@ const downloadImageCors = axios.create({
     responseType: 'blob'
   }
 })
-import { DeletarMensagem, EditarMensagem } from 'src/service/tickets'
+import { DeletarMensagem, EditarMensagem, ReagirMensagem } from 'src/service/tickets'
 import { Base64 } from 'js-base64'
 export default {
   name: 'MensagemChat',
@@ -400,6 +454,10 @@ export default {
   data () {
     return {
       modalContato: false,
+      modalEmojiOpen: false,
+      mensagemReacao: null,
+      expandirEmojis: false,
+      principaisEmojis: ['👍', '❤️', '😂', '😮', '😢', '👏'],
       currentContact: {},
       mensagemAtual: { body: '' },
       showModaledit: false,
@@ -420,7 +478,8 @@ export default {
     MensagemRespondida,
     ContatoCard,
     ContatoModal,
-    AudioVisualizer
+    AudioVisualizer,
+    VEmojiPicker
   },
   methods: {
     openContactModal (contact) {
@@ -458,6 +517,43 @@ export default {
     AbrirmodaleditarMensagem (mensagem) {
       this.mensagemAtual = mensagem
       this.showModaledit = true
+    },
+    async selectEmoji (emoji, mensagem) {
+      if (mensagem) {
+        const reactionData = {
+          messageId: mensagem.messageId,
+          ticketId: mensagem.ticketId,
+          reaction: emoji
+        }
+        await ReagirMensagem(reactionData)
+        this.mensagem = null
+      } else {
+        console.error('Nenhuma mensagem foi selecionada para reação.')
+      }
+      this.modalEmojiOpen = false
+    },
+    calculateEmojisByRow () {
+      const screenWidth = window.innerWidth
+      if (screenWidth < 600) {
+        return 5
+      } else if (screenWidth >= 600 && screenWidth < 1200) {
+        return 10
+      } else {
+        return 20
+      }
+    },
+    onInsertSelectEmoji (emoji) {
+      if (this.mensagemReacao) {
+        const reactionData = {
+          messageId: this.mensagemReacao.messageId,
+          ticketId: this.mensagemReacao.ticketId,
+          reaction: emoji.data
+        }
+        this.selectEmoji(reactionData.reaction, this.mensagemReacao)
+      } else {
+        console.error('Nenhuma mensagem foi selecionada para reação.')
+      }
+      this.modalEmojiOpen = false
     },
     verificarEncaminharMensagem (mensagem) {
       const mensagens = [...this.mensagensParaEncaminhar]
