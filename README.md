@@ -4,7 +4,11 @@
 
 # Izing com painel SaaS - Hub NotificaMe(facebook e instagram) - Wavoip
 
-Preço especial por canal NotificaMe chamar whatsapp (48) 99941-6725
+Cupom desconto Notifica Me - cadastre pelo link https://hub.whazing.com.br
+
+```bash
+whazing
+```
 
 https://wavoip.com/
 
