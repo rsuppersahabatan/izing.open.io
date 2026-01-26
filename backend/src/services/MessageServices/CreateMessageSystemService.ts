@@ -1,21 +1,15 @@
 /* eslint-disable prefer-destructuring */
 import fs from "fs";
-// import { promisify } from "util";
 import { join } from "path";
 import axios from "axios";
 import mime from "mime";
 import { v4 as uuidv4 } from "uuid";
 import { logger } from "../../utils/logger";
-// import MessageOffLine from "../../models/MessageOffLine";
 import Ticket from "../../models/Ticket";
 import Message from "../../models/Message";
 import socketEmit from "../../helpers/socketEmit";
 import Queue from "../../libs/Queue";
 import { pupa } from "../../utils/pupa";
-import SendWhatsAppMedia from "../WbotServices/SendWhatsAppMedia";
-import SendWhatsAppMessage from "../WbotServices/SendWhatsAppMessage";
-import TelegramSendMessagesSystem from "../TbotServices/TelegramSendMessagesSystem";
-import { getTbot } from "../../libs/tbot";
 import SendMessageSystemProxy from "../../helpers/SendMessageSystemProxy";
 
 interface MessageData {

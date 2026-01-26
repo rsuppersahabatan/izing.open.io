@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import CreateChannelsService from "../services/WbotNotificame/CreateChannelsService";
 import { getIO } from "../libs/socket";
 import ListChannels from "../services/WbotNotificame/ListChannels";
-import { setChannelWebhook } from "../helpers/SetChannelWebhook";
+import setChannelHubWebhook from "../helpers/SetChannelWebhook";
 
 export interface IChannel {
   name: string;
@@ -35,7 +35,7 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
         phone: whatsapp.phone,
         number: whatsapp.number
       };
-      setChannelWebhook(whatsappChannel, whatsapp.id.toString());
+   //   setChannelHubWebhook(whatsappChannel);
     }, 2000);
   });
 
@@ -55,7 +55,7 @@ export const index = async (req: Request, res: Response): Promise<Response> => {
   const { tenantId } = req.user;
 
   try {
-    const channels = await ListChannels(tenantId.toString());
+    const channels = await ListChannels(Number(tenantId));
     return res.status(200).json(channels);
   } catch (error) {
     return res.status(500).json({ error: error.message });

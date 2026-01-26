@@ -1,20 +1,15 @@
-import Whatsapp from "../models/Whatsapp";
-import { IChannel } from "../controllers/ChannelHubController";
-import { showHubToken } from "./ShowHubToken";
-
 import { Client, MessageSubscription } from "notificamehubsdk";
+
+import { showHubToken } from "./ShowHubToken";
+import Whatsapp from "../models/Whatsapp";
 import { logger } from "../utils/logger";
 
-export const setChannelWebhook = async (
-  whatsapp: IChannel,
-  whatsappId: string
-) => {
-  const notificameHubToken = await showHubToken(whatsapp.tenantId.toString());
+const setChannelHubWebhook = async (whatsapp: Whatsapp) => {
+  const notificameHubToken = await showHubToken(whatsapp.tenantId);
 
   const client = new Client(notificameHubToken);
 
   const url = `${process.env.BACKEND_URL}/hub-webhook/${whatsapp.number}`;
-
 
   const subscription = new MessageSubscription(
     {
@@ -28,20 +23,13 @@ export const setChannelWebhook = async (
   client
     .createSubscription(subscription)
     .then((response: any) => {
-      logger.info("Webhook subscribed " + response);
+      logger.info(`Webhook subscribed ${response}`);
     })
     .catch((error: any) => {
-      logger.warn("Webhook subscribed e " + error);
+      logger.warn(`Webhook subscription error: ${error}`);
     });
 
-  await Whatsapp.update(
-    {
-      status: "CONNECTED"
-    },
-    {
-      where: {
-        id: whatsappId
-      }
-    }
-  );
+  await whatsapp.update({ status: "CONNECTED" });
 };
+
+export default setChannelHubWebhook;

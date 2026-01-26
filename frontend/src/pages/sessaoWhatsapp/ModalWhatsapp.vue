@@ -48,13 +48,13 @@
             />
           </div>
 
-          <div class="col-12 q-my-sm" v-if="whatsapp.type === 'hub'">
+          <div class="col-12 q-my-sm" v-if="whatsapp.type === 'hub' || whatsapp.type === 'connectionhub'">
             <q-select v-model="selectedHubOption"
               rounded
               outlined
               dense
               :options="hubOptions"
-              label="Selecione um Hub"
+              label="Selecione um Canal do Hub"
               filled />
           </div>
           <div
@@ -253,7 +253,7 @@
 <script>
 import { required, minLength, maxLength } from 'vuelidate/lib/validators'
 import { UpdateWhatsapp, CriarWhatsapp } from 'src/service/sessoesWhatsapp'
-import { ListarHub, AdicionarHub } from 'src/service/hub'
+import { ListarHub, ListarConnectionHub } from 'src/service/hub'
 import cInput from 'src/components/cInput.vue'
 import { copyToClipboard, Notify } from 'quasar'
 
@@ -293,8 +293,9 @@ export default {
       optionsWhatsappsTypes: [
         { label: 'Whatsapp', value: 'whatsapp' },
         { label: 'Telegram', value: 'telegram' },
+        { label: 'Connection Hub', value: 'connectionhub' },
         { label: 'Hub Notificame', value: 'hub' }
-        // { label: 'Instagram', value: 'instagram' }
+
       ],
       variaveis: [
         { label: 'Nome', value: '{{name}}' },
@@ -309,15 +310,13 @@ export default {
       isDefault: {}
     }
   },
-  computed: {
-    cBaseUrlIntegração () {
-      return this.whatsapp.UrlMessengerWebHook
-    }
-  },
   watch: {
     'whatsapp.type' (newType) {
       if (newType === 'hub') {
         this.listarHubOptions()
+      }
+      if (newType === 'connectionhub') {
+        this.listarConnectionHubOptions()
       }
     }
   },
@@ -331,6 +330,37 @@ export default {
             label: hub.name,
             value: hub
           }))
+      } catch (error) {
+        console.error('Erro ao listar Hubs:', error)
+      }
+    },
+    async listarConnectionHubOptions () {
+      try {
+        const response = await ListarConnectionHub()
+
+        this.hubOptions = response.data.map((item) => {
+          const channelType = item.type
+
+          const label = `${item.pageName} (${channelType})`
+
+          return {
+            label: label,
+            value: {
+              channel: channelType,
+              name: item.pageName,
+              id: item.pageId,
+              instagram:
+                channelType === 'instagram' || item.igId
+                  ? {
+                    name: item.pageName
+                  }
+                  : null,
+              accessToken: item.accessToken,
+              channelToken: item.channelToken,
+              pageAccessToken: item.pageAccessToken
+            }
+          }
+        })
       } catch (error) {
         console.error('Erro ao listar Hubs:', error)
       }
@@ -399,117 +429,111 @@ export default {
     },
     async handleSaveWhatsApp (whatsapp) {
       this.$v.whatsapp.$touch()
-      if (whatsapp.type !== 'hub') {
-        if (this.$v.whatsapp.$error) {
-          return this.$q.notify({
-            type: 'warning',
-            progress: true,
-            position: 'top',
-            message: 'Ops! Verifique os erros...',
-            actions: [{
+      if (this.$v.whatsapp.$error) {
+        return this.$q.notify({
+          type: 'warning',
+          progress: true,
+          position: 'top',
+          message: 'Erro validar dados',
+          actions: [
+            {
               icon: 'close',
               round: true,
               color: 'white'
-            }]
-          })
-        }
-        try {
-          if (this.whatsAppEdit.id) {
-            await UpdateWhatsapp(this.whatsAppEdit.id, whatsapp)
-          } else {
-            await CriarWhatsapp(whatsapp)
+            }
+          ]
+        })
+      }
+      try {
+        if (this.whatsAppEdit.id) {
+          await UpdateWhatsapp(this.whatsAppEdit.id, whatsapp)
+        } else {
+          if (whatsapp.type === 'connectionhub') {
+            if (!this.selectedHubOption) {
+              return this.$q.notify({
+                type: 'warning',
+                message: 'Você tem que selecionar um canal HUB',
+                position: 'top',
+                actions: [{ icon: 'close', round: true, color: 'white' }]
+              })
+            }
+            const selectedHub = this.selectedHubOption.value
+
+            whatsapp.status = 'CONNECTED'
+            whatsapp.type = 'con_' + selectedHub.channel
+            whatsapp.isDefault = false
+            whatsapp.phone = selectedHub
+            whatsapp.tokenAPI = selectedHub.channelToken
+            whatsapp.fbPageId = selectedHub.id
+          } else if (whatsapp.type === 'hub') {
+            if (!this.selectedHubOption) {
+              return this.$q.notify({
+                type: 'warning',
+                message: 'Você tem que selecionar um canal',
+                position: 'top',
+                actions: [{ icon: 'close', round: true, color: 'white' }]
+              })
+            }
+            const selectedHub = this.selectedHubOption.value
+            let channelType = selectedHub.channel
+            if (channelType === 'whatsapp_business_account') {
+              channelType = 'whatsapp'
+            }
+            whatsapp.status = 'CONNECTED'
+            whatsapp.isDefault = false
+            whatsapp.type = 'hub_' + channelType
+            whatsapp.wabaId = selectedHub.id
+            whatsapp.number = selectedHub.id
+            whatsapp.phone = selectedHub
+            whatsapp.instagramUser =
+              channelType === 'instagram'
+                ? selectedHub.instagram.name
+                : channelType === 'facebook' && selectedHub.instagram
+                  ? selectedHub.instagram.name
+                  : ''
           }
-          this.$q.notify({
-            type: 'positive',
-            progress: true,
-            position: 'top',
-            message: `Whatsapp ${this.whatsAppEdit.id ? 'editado' : 'criado'} com sucesso!`,
-            actions: [{
+
+          await CriarWhatsapp(whatsapp)
+        }
+        this.$q.notify({
+          type: 'positive',
+          progress: true,
+          position: 'top',
+          message: `Whatsapp ${this.whatsAppEdit.id ? 'editado' : 'criado'} com sucesso!`,
+          actions: [
+            {
               icon: 'close',
               round: true,
               color: 'white'
-            }]
+            }
+          ]
+        })
+        this.$emit('recarregar-lista')
+        this.fecharModal()
+      } catch (error) {
+        console.error(error, error.data.error === 'ERR_NO_PERMISSION_CONNECTIONS_LIMIT')
+        if (error.data.error === 'ERR_NO_PERMISSION_CONNECTIONS_LIMIT') {
+          Notify.create({
+            type: 'negative',
+            message: 'Limite de conexões atingida.',
+            position: 'top',
+            progress: true
           })
-          this.$emit('recarregar-lista')
-          this.fecharModal()
-        } catch (error) {
-          console.error(error, error.data.error === 'ERR_NO_PERMISSION_CONNECTIONS_LIMIT')
-          if (error.data.error === 'ERR_NO_PERMISSION_CONNECTIONS_LIMIT') {
-            Notify.create({
-              type: 'negative',
-              message: 'Limite de conexões atingida.',
-              caption: 'ERR_NO_PERMISSION_CONNECTIONS_LIMIT',
-              position: 'top',
-              progress: true
-            })
-          } else {
-            console.error(error)
-            return this.$q.notify({
-              type: 'error',
-              progress: true,
-              position: 'top',
-              message: 'Ops! Verifique os erros... O nome da conexão não pode existir na plataforma, é um identificador único.',
-              actions: [{
+        } else {
+          console.error(error)
+
+          this.$q.notify({
+            type: 'negative',
+            progress: true,
+            position: 'top',
+            message: 'Ops! Verifique os erros... O nome da conexão não pode existir na plataforma, é um identificador único.',
+            actions: [
+              {
                 icon: 'close',
                 round: true,
                 color: 'white'
-              }]
-            })
-          }
-        }
-      } else if (whatsapp.type === 'hub') {
-        if (this.$v.whatsapp.$error) {
-          return this.$q.notify({
-            type: 'warning',
-            progress: true,
-            position: 'top',
-            message: 'Ops! Verifique os erros...',
-            actions: [{
-              icon: 'close',
-              round: true,
-              color: 'white'
-            }]
-          })
-        }
-        if (!this.selectedHubOption) {
-          return this.$q.notify({
-            type: 'warning',
-            message: 'Por favor, selecione um Hub antes de continuar.',
-            position: 'top',
-            actions: [{ icon: 'close', round: true, color: 'white' }]
-          })
-        }
-        const selectedHub = this.selectedHubOption.value
-        const data = {
-          name: this.whatsapp.name,
-          status: 'CONNECTED',
-          isDefault: false,
-          type: 'hub_' + selectedHub.channel,
-          wabaId: selectedHub.id,
-          number: selectedHub.id,
-          profilePic: selectedHub.profile_pic,
-          phone: selectedHub
-        }
-
-        const payload = {
-          channels: [data]
-        }
-        try {
-          const response = await AdicionarHub(payload)
-          console.log(response)
-          this.$q.notify({
-            type: 'positive',
-            message: 'Hub adicionado com sucesso!',
-            position: 'top'
-          })
-          this.$emit('recarregar-lista')
-          this.fecharModal()
-        } catch (error) {
-          console.error('Erro ao adicionar o Hub:', error)
-          this.$q.notify({
-            type: 'negative',
-            message: 'Erro ao adicionar o Hub. Por favor, tente novamente.',
-            position: 'top'
+              }
+            ]
           })
         }
       }

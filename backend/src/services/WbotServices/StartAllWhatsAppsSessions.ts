@@ -1,9 +1,8 @@
 import { Op } from "sequelize";
-// import { initInstaBot } from "../../libs/InstaBot";
 import Whatsapp from "../../models/Whatsapp";
 import { StartTbotSession } from "../TbotServices/StartTbotSession";
 import { StartWhatsAppSession } from "./StartWhatsAppSession";
-// import { StartTbotSession } from "../TbotServices/StartTbotSession";
+import setConnectionHubChannelWebhook from "../WbotConnectionHub/helpers/setChannelWebhook";
 
 export const StartAllWhatsAppsSessions = async (): Promise<void> => {
   const whatsapps = await Whatsapp.findAll({
@@ -12,7 +11,7 @@ export const StartAllWhatsAppsSessions = async (): Promise<void> => {
         {
           [Op.and]: {
             type: {
-              [Op.in]: ["instagram", "telegram", "waba"]
+              [Op.in]: ["telegram"]
             },
             status: {
               [Op.notIn]: ["DISCONNECTED"]
@@ -20,12 +19,8 @@ export const StartAllWhatsAppsSessions = async (): Promise<void> => {
           }
         },
         {
-          [Op.and]: {
-            type: "whatsapp"
-          },
           status: {
             [Op.notIn]: ["DISCONNECTED", "qrcode"]
-            // "DISCONNECTED"
           }
         }
       ],
@@ -37,6 +32,10 @@ export const StartAllWhatsAppsSessions = async (): Promise<void> => {
     w => w.type === "telegram" && !!w.tokenTelegram
   );
 
+  const ConnectionHubSessions = whatsapps.filter(
+    w => w.type.startsWith("con_") && !!w.tokenAPI
+  );
+
   if (whatsappSessions.length > 0) {
     whatsappSessions.forEach(whatsapp => {
       StartWhatsAppSession(whatsapp);
@@ -46,6 +45,12 @@ export const StartAllWhatsAppsSessions = async (): Promise<void> => {
   if (telegramSessions.length > 0) {
     telegramSessions.forEach(whatsapp => {
       StartTbotSession(whatsapp);
+    });
+  }
+
+  if (ConnectionHubSessions.length > 0) {
+    ConnectionHubSessions.forEach(whatsapp => {
+      setConnectionHubChannelWebhook(whatsapp);
     });
   }
 

@@ -1,6 +1,6 @@
 import Setting from "../models/Setting";
 
-export const showHubToken = async (tenantId: string): Promise<string> => {
+export const showHubToken = async (tenantId: number): Promise<string> => {
 
   const hubToken = await Setting.findOne({
     where: { key: "hubToken", tenantId }

@@ -22,3 +22,10 @@ export function EnviarMensagemHub (ticketId, data) {
     data
   })
 }
+
+export function ListarConnectionHub () {
+  return request({
+    url: '/connection-channel/',
+    method: 'get'
+  })
+}

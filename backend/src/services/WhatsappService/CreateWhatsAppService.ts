@@ -2,6 +2,8 @@ import AppError from "../../errors/AppError";
 import { getIO } from "../../libs/socket";
 import Whatsapp from "../../models/Whatsapp";
 import { logger } from "../../utils/logger";
+import setConnectionHubChannelWebhook from "../WbotConnectionHub/helpers/setChannelWebhook";
+import setChannelHubWebhook from "../../helpers/SetChannelWebhook";
 
 interface Request {
   name: string;
@@ -88,6 +90,14 @@ const CreateWhatsAppService = async ({
       action: "update",
       whatsapp
     });
+
+    if (type.startsWith("hub_")) {
+      setChannelHubWebhook(whatsapp);
+    }
+
+    if (type.startsWith("con_")) {
+      setConnectionHubChannelWebhook(whatsapp);
+    }
 
     return { whatsapp, oldDefaultWhatsapp: whatsappFound };
   } catch (error) {

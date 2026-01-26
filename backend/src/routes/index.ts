@@ -24,6 +24,7 @@ import adminRoutes from "./adminRoutes";
 import hubChannelRoutes from "./hubChannelRoutes";
 import hubMessageRoutes from "./hubMessageRoutes";
 import hubWebhookRoutes from "./hubWebhookRoutes";
+import ConnectionHubRoutes from "./ConnectionHubRoutes";
 
 const routes = Router();
 
@@ -52,5 +53,6 @@ routes.use(adminRoutes);
 routes.use(hubChannelRoutes);
 routes.use(hubMessageRoutes);
 routes.use(hubWebhookRoutes);
+routes.use(ConnectionHubRoutes);
 
 export default routes;

@@ -3,7 +3,7 @@ import { logger } from "../../utils/logger";
 import { Client } from "notificamehubsdk";
 require("dotenv").config();
 
-const ListChannels = async (tenantId: string): Promise<any> => {
+const ListChannels = async (tenantId: number): Promise<any> => {
   try {
     const notificameHubToken = await showHubToken(tenantId);
 

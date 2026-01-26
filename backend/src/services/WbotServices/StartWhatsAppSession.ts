@@ -6,6 +6,7 @@ import wbotMonitor from "./wbotMonitor";
 import { logger } from "../../utils/logger";
 import AppError from "../../errors/AppError";
 import { StartTbotSession } from "../TbotServices/StartTbotSession";
+import setConnectionHubChannelWebhook from "../WbotConnectionHub/helpers/setChannelWebhook";
 
 export const StartWhatsAppSession = async (
   whatsapp: Whatsapp
@@ -27,6 +28,15 @@ export const StartWhatsAppSession = async (
 
     if (whatsapp.type === "telegram") {
       StartTbotSession(whatsapp);
+    }
+
+    if (whatsapp.type.startsWith("con_")) {
+      setConnectionHubChannelWebhook(whatsapp);
+      await whatsapp.update({ status: "CONNECTED" });
+      io.emit(`${whatsapp.tenantId}:whatsappSession`, {
+        action: "update",
+        session: whatsapp
+      });
     }
 
   } catch (err) {

@@ -1,4 +1,6 @@
 const backendErrors = {
+  TOKEN_ERROR_HUB:
+    'Token hub não prenchido ou preenchido incorretamente. Use token da Conta',
   ERR_NO_DEF_WAPP_FOUND:
     'Nenhum WhatsApp padrão encontrado. Verifique a página de conexões.',
   ERR_WAPP_NOT_INITIALIZED:
