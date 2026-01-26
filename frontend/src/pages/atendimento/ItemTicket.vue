@@ -59,94 +59,76 @@
 
       </q-item-section>
       <q-item-section id="ListItemsTicket">
-        <q-item-label class="text-bold"
-          lines="1">
+        <q-item-label class="text-bold" lines="1">
           {{ !ticket.name ? ticket.contact.name : ticket.name }}
-          <q-icon size="20px"
-            :name="`img:${ticket.channel}-logo.png`" />
+          <q-icon size="20px" :name="`img:${ticket.channel}-logo.png`" />
           <span class="absolute-top-right q-pr-xs">
-            <q-badge dense
-              style="font-size: .7em;"
-              transparent
-              square
-              text-color="grey-10"
-              color="secondary"
-              :label="dataInWords(ticket.lastMessageAt, ticket.updatedAt)"
-              :key="recalcularHora" />
-          </span>
+      <q-badge
+        dense
+        style="font-size: .7em;"
+        transparent
+        square
+        text-color="grey-10"
+        color="secondary"
+        :label="dataInWords(ticket.lastMessageAt, ticket.updatedAt)"
+        :key="recalcularHora"
+      />
+    </span>
         </q-item-label>
-        <q-item-label lines="1"
-          caption>
+
+        <q-item-label lines="1" caption>
           {{ ticket.lastMessage }}
         </q-item-label>
-        <q-item-label lines="1"
-          caption>
+
+        <q-item-label lines="1" caption>
           #{{ ticket.id }}
           <span class="q-ml-sm">
-            {{ `Fila: ${ticket.queue || obterNomeFila(ticket) || ''}` }}
-          </span>
-          <span class="absolute-bottom-right ">
-            <q-icon v-if="ticket.status === 'closed'"
-              name="mdi-check-circle-outline"
-              color="positive"
-              size="1.8em"
-              class="q-mb-sm">
-              <q-tooltip>
-                Atendimento Resolvido
-              </q-tooltip>
-            </q-icon>
-            <q-icon
-              v-if="(ticket.stepAutoReplyId && ticket.autoReplyId && ticket.status === 'pending') || (ticket.chatFlowId && ticket.stepChatFlow && ticket.status === 'pending')"
-              name="mdi-robot"
-              color="primary"
-              size="1.8em"
-              class="q-mb-sm">
-              <q-tooltip>
-                ChatBot atendendo
-              </q-tooltip>
-            </q-icon>
-          </span>
+      {{ `Fila: ${ticket.queue || obterNomeFila(ticket) || ''}` }}
+    </span>
         </q-item-label>
-        <q-item-label class="row col items-center justify-between"
-          caption>
+
+        <q-item-label class="row col items-center justify-between" caption>
           Usuário: {{ ticket.username }}
-          <q-chip :color="$q.dark.isActive ? 'blue-9' : 'blue-2'"
+          <q-chip
+            :color="$q.dark.isActive ? 'blue-9' : 'blue-2'"
             dense
             square
             :label="ticket.whatsapp && ticket.whatsapp.name"
             size="10px"
-            class="q-mr-md text-bold" />
+            class="q-mr-md text-bold"
+          />
         </q-item-label>
-        <!-- <span class="absolute-bottom-right" v-if="ticket.unreadMessages">
-          <q-badge style="font-size: .8em; border-radius: 10px;" class="q-py-xs" dense text-color="white" color="green" :label="ticket.unreadMessages" />
-        </span> -->
-        <q-item-section avatar class="absolute-right q-pr-xs">
-        <q-btn flat
+      </q-item-section>
+
+      <!-- SECTION SEPARADA (nível correto) -->
+      <q-item-section avatar class="absolute-right q-pr-xs">
+        <q-btn
+          flat
           @click="espiarAtendimento(ticket)"
           push
           color="primary"
           dense
           round
           v-if="ticket.status === 'pending' || (buscaTicket && ticket.status === 'pending')"
-          class="q-mr-md">
-          <q-badge v-if="ticket.unreadMessages"
+          class="q-mr-md"
+        >
+          <q-badge
+            v-if="ticket.unreadMessages"
             style="border-radius: 10px;"
             class="text-center text-bold"
             floating
             dense
             text-color="black"
             color="blue-2"
-            :label="ticket.unreadMessages" />
+            :label="ticket.unreadMessages"
+          />
           <q-avatar>
-            <q-icon size="20px"
-              name="mdi-eye-outline" />
+            <q-icon size="20px" name="mdi-eye-outline" />
           </q-avatar>
-          <q-tooltip>
-            Espiar
-          </q-tooltip>
+          <q-tooltip>Espiar</q-tooltip>
         </q-btn>
-
       </q-item-section>
+
     </q-item>
     <q-separator color="grey-2"
       inset="item" />
