@@ -51,16 +51,21 @@ const AdminCreateTenantService = async ({
 
   // Inserir as configurações padrão para o novo inquilino
   const defaultSettings = [
-    { key: 'userCreation', value: 'disabled' },
-    { key: 'NotViewTicketsQueueUndefined', value: 'disabled' },
-    { key: 'NotViewTicketsChatBot', value: 'disabled' },
-    { key: 'DirectTicketsToWallets', value: 'disabled' },
-    { key: 'NotViewAssignedTickets', value: 'disabled' },
-    { key: 'botTicketActive', value: '3' },
-    { key: 'ignoreGroupMsg', value: 'enabled' },
-    { key: 'rejectCalls', value: 'disabled' },
-    { key: 'hubToken', value: 'disabled' },
-    { key: 'callRejectMessage', value: 'As chamadas de voz e vídeo estão desabilitas para esse WhatsApp, favor enviar uma mensagem de texto.' }
+    { key: "userCreation", value: "disabled" },
+    { key: "NotViewTicketsQueueUndefined", value: "disabled" },
+    { key: "NotViewTicketsChatBot", value: "disabled" },
+    { key: "DirectTicketsToWallets", value: "disabled" },
+    { key: "NotViewAssignedTickets", value: "disabled" },
+    { key: "botTicketActive", value: "3" },
+    { key: "ignoreGroupMsg", value: "enabled" },
+    { key: "rejectCalls", value: "disabled" },
+    { key: "hubToken", value: "disabled" },
+    { key: "openAiKey", value: "" },
+    {
+      key: "callRejectMessage",
+      value:
+        "As chamadas de voz e vídeo estão desabilitas para esse WhatsApp, favor enviar uma mensagem de texto."
+    }
   ];
 
   for (const setting of defaultSettings) {

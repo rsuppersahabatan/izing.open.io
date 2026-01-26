@@ -332,7 +332,7 @@
             </template>
             <div
               v-linkified
-              v-if=" !['vcard', 'application', 'audio', 'reaction'].includes(mensagem.mediaType) "
+              v-if=" !['vcard', 'application', 'reaction'].includes(mensagem.mediaType) "
               :class=" { 'q-mt-sm': mensagem.mediaType !== 'chat' } "
               class="q-message-container row items-end no-wrap"
             >

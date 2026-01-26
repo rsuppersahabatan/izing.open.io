@@ -12,6 +12,8 @@ import CreateMessageService from "../../MessageServices/CreateMessageService";
 import { logger } from "../../../utils/logger";
 
 import convertToMp3 from "../../../helpers/convertToMp3";
+import createTranscription from "../../../helpers/createTranscription";
+import getPublicPath from "../../../helpers/GetPublicPath";
 
 const writeFileAsync = promisify(fs.writeFile);
 
@@ -35,7 +37,8 @@ const VerifyMediaMessage = async (
     media.filename = `${Date.now()}-${media.filename}`;
   }
 
-  const publicDir = join(__dirname, "..", "..", "..", "..", "public");
+  const publicDir = getPublicPath();
+
   const inputFile = join(publicDir, media.filename);
 
   try {
@@ -53,22 +56,30 @@ const VerifyMediaMessage = async (
     return;
   }
 
+  const mediaType = media.mimetype.split("/")[0];
+  let MensagemBody = msg.body;
+
+  if (mediaType === "audio" && (!MensagemBody || MensagemBody.trim() === "")) {
+    const inputFile2 = join(publicDir, media.filename);
+    MensagemBody = await createTranscription(inputFile2, ticket.tenantId);
+  }
+
   const messageData = {
     messageId: msg.id.id,
     ticketId: ticket.id,
     contactId: msg.fromMe ? undefined : contact.id,
-    body: msg.body,
+    body: MensagemBody,
     fromMe: msg.fromMe,
     read: msg.fromMe,
     mediaUrl: media.filename,
-    mediaType: media.mimetype.split("/")[0],
+    mediaType,
     quotedMsgId: quotedMsg?.id,
     timestamp: msg.timestamp,
     status: msg.fromMe ? "sended" : "received"
   };
 
   await ticket.update({
-    lastMessage: msg.body,
+    lastMessage: MensagemBody,
     lastMessageAt: Date.now(),
     answered: msg.fromMe || false
   });
@@ -78,7 +89,6 @@ const VerifyMediaMessage = async (
     tenantId: ticket.tenantId
   });
 
-  // eslint-disable-next-line consistent-return
   return newMessage;
 };
 

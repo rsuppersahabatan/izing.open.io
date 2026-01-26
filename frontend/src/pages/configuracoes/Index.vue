@@ -198,6 +198,29 @@
         </div>
        </div>
 
+      <div class="row q-px-md">
+        <q-item tag="label" class="col-8" v-ripple>
+          <q-item-section>
+            <q-item-label>Transcrição de audio - Token OpenAi</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <div class="col-4">
+          <q-input
+            class="blur-effect"
+            v-model="openAiKey"
+            type="textarea"
+            autogrow
+            dense
+            outlined
+            label="Token OpenAi"
+            input-style="min-height: 6vh;"
+            debounce="700"
+            @input="atualizarConfiguracao('openAiKey')"
+          />
+        </div>
+      </div>
+
     </q-list>
   </div>
 </template>
@@ -218,7 +241,8 @@ export default {
       ignoreGroupMsg: null,
       rejectCalls: null,
       callRejectMessage: '',
-      hubToken: ''
+      hubToken: '',
+      openAiKey: ''
     }
   },
   methods: {
