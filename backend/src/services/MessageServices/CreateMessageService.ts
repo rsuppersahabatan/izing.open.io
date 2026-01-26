@@ -1,4 +1,5 @@
 import Message from "../../models/Message";
+import Contact from "../../models/Contact";
 import Ticket from "../../models/Ticket";
 import socketEmit from "../../helpers/socketEmit";
 
@@ -31,9 +32,30 @@ const CreateMessageService = async ({
   } else {
     await msg.update(messageData);
   }
-  const message = await Message.findOne({
-    where: { messageId: messageData.messageId, tenantId },
-    include: [
+
+  let includes;
+
+  if (!messageData.fromMe) {
+    includes = [
+      {
+        model: Ticket,
+        as: "ticket",
+        where: { tenantId },
+        include: ["contact"]
+      },
+      {
+        model: Message,
+        as: "quotedMsg",
+        include: ["contact"]
+      },
+      {
+        model: Contact,
+        as: "contact",
+        where: { id: messageData.contactId }
+      }
+    ];
+  } else {
+    includes = [
       {
         model: Ticket,
         as: "ticket",
@@ -45,7 +67,15 @@ const CreateMessageService = async ({
         as: "quotedMsg",
         include: ["contact"]
       }
-    ]
+    ];
+  }
+
+  const message = await Message.findOne({
+    where: {
+      messageId: messageData.messageId,
+      tenantId
+    },
+    include: includes
   });
 
   if (!message) {
