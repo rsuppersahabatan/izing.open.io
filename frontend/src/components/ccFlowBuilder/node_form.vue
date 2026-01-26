@@ -415,14 +415,7 @@
                         self="bottom middle"
                         :offset="[5, 40]"
                       >
-                        <VEmojiPicker
-                          style="width: 40vw"
-                          :showSearch="false"
-                          :emojisByRow="20"
-                          labelSearch="Localizar..."
-                          lang="pt-BR"
-                          @select="onInsertSelectEmojiSaudacao"
-                        />
+                        <EmojiPicker @select="(v) => onInsertSelectEmojiSaudacao(v)" />
                       </q-menu>
                     </q-btn>
                   </div>
@@ -484,14 +477,7 @@
                         self="bottom middle"
                         :offset="[5, 40]"
                       >
-                        <VEmojiPicker
-                          style="width: 40vw"
-                          :showSearch="false"
-                          :emojisByRow="20"
-                          labelSearch="Localizar..."
-                          lang="pt-BR"
-                          @select="onInsertSelectEmojiNotOptionsSelectMessage"
-                        />
+                        <EmojiPicker @select="(v) => onInsertSelectEmojiNotOptionsSelectMessage(v)" />
                       </q-menu>
                     </q-btn>
                   </div>
@@ -761,11 +747,10 @@
 import { uid } from 'quasar'
 import MessageField from './messageField'
 import MediaField from './mediaField.vue'
-import { VEmojiPicker } from 'v-emoji-picker'
 export default {
   components: {
     MessageField,
-    VEmojiPicker,
+    VEmojiPicker: () => import('components/EmojiPicker.vue'),
     MediaField
   },
   props: {

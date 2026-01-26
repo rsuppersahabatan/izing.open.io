@@ -180,14 +180,7 @@
                 self="bottom middle"
                 :offset="[5, 40]"
               >
-                <VEmojiPicker
-                  style="width: 40vw"
-                  :showSearch="false"
-                  :emojisByRow="20"
-                  labelSearch="Localizar..."
-                  lang="pt-BR"
-                  @select="onInsertSelectEmoji"
-                />
+                <EmojiPicker @select="(v) => onInsertSelectEmoji(v)" />
               </q-menu>
             </q-btn>
               <q-btn
@@ -263,10 +256,9 @@ import { UpdateWhatsapp, CriarWhatsapp } from 'src/service/sessoesWhatsapp'
 import { ListarHub, AdicionarHub } from 'src/service/hub'
 import cInput from 'src/components/cInput.vue'
 import { copyToClipboard, Notify } from 'quasar'
-import { VEmojiPicker } from 'v-emoji-picker'
 
 export default {
-  components: { cInput, VEmojiPicker },
+  components: { cInput, EmojiPicker: () => import('components/EmojiPicker.vue') },
   name: 'ModalWhatsapp',
   props: {
     modalWhatsapp: {

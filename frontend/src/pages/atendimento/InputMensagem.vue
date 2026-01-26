@@ -120,14 +120,7 @@
               self="bottom middle"
               :offset="[5, 40]"
             >
-              <VEmojiPicker
-                style="width: 40vw"
-                :showSearch="false"
-                :emojisByRow="20"
-                labelSearch="Localizar..."
-                lang="pt-BR"
-                @select="onInsertSelectEmoji"
-              />
+              <EmojiPicker @select="(v) => onInsertSelectEmoji(v)" />
             </q-menu>
           </q-btn>
           <q-btn
@@ -202,14 +195,7 @@
                   self="bottom middle"
                   :offset="[5, 40]"
                 >
-                  <VEmojiPicker
-                    style="width: 40vw"
-                    :showSearch="false"
-                    :emojisByRow="20"
-                    labelSearch="Localizar..."
-                    lang="pt-BR"
-                    @select="onInsertSelectEmoji"
-                  />
+                  <EmojiPicker @select="(v) => onInsertSelectEmoji(v)" />
                 </q-menu>
               </q-btn>
             </template>
@@ -405,7 +391,6 @@ import { LocalStorage, uid } from 'quasar'
 import mixinCommon from './mixinCommon'
 import { EnviarMensagemTexto } from 'src/service/tickets'
 import { EnviarMensagemHub } from 'src/service/hub'
-import { VEmojiPicker } from 'v-emoji-picker'
 import { mapGetters } from 'vuex'
 import RecordingTimer from './RecordingTimer'
 import MicRecorder from 'mic-recorder-to-mp3'
@@ -433,7 +418,7 @@ export default {
     }
   },
   components: {
-    VEmojiPicker,
+    EmojiPicker: () => import('components/EmojiPicker.vue'),
     RecordingTimer
   },
   data () {

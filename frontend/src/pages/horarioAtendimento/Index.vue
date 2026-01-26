@@ -145,14 +145,7 @@
                 self="bottom middle"
                 :offset="[5, 40]"
               >
-                <VEmojiPicker
-                  style="width: 40vw"
-                  :showSearch="false"
-                  :emojisByRow="20"
-                  labelSearch="Localizar..."
-                  lang="pt-BR"
-                  @select="onInsertSelectEmoji"
-                />
+                <EmojiPicker @select="(v) => onInsertSelectEmoji(v)" />
               </q-menu>
             </q-btn>
             <q-btn round
@@ -197,11 +190,10 @@
 </template>
 
 <script>
-import { VEmojiPicker } from 'v-emoji-picker'
 import { MostrarHorariosAtendiemento, AtualizarHorariosAtendiemento, AtualizarMensagemHorariosAtendiemento } from 'src/service/empresas'
 export default {
   name: 'HorarioAtendimento',
-  components: { VEmojiPicker },
+  components: { EmojiPicker: () => import('components/EmojiPicker.vue') },
   data () {
     return {
       userProfile: 'user',

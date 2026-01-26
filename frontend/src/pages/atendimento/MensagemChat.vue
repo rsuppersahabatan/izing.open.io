@@ -367,13 +367,7 @@
           />
 
           <div v-if="expandirEmojis">
-            <VEmojiPicker
-              style="width: 40vw"
-              :showSearch="true"
-              :emojisByRow="calculateEmojisByRow()"
-              lang="pt-BR"
-              @select="onInsertSelectEmoji"
-            />
+            <EmojiPicker @select="(v) => onInsertSelectEmoji(v)" />
           </div>
         </q-card-section>
       </q-card>
@@ -403,8 +397,6 @@ import VueEasyLightbox from 'vue-easy-lightbox'
 import MensagemRespondida from './MensagemRespondida'
 import ContatoCard from './ContatoCard.vue'
 import ContatoModal from './ContatoModal.vue'
-import AudioVisualizer from '../../components/AudioVisualizer.vue'
-import { VEmojiPicker } from 'v-emoji-picker'
 const downloadImageCors = axios.create({
   baseURL: process.env.VUE_URL_API,
   timeout: 20000,
@@ -478,8 +470,8 @@ export default {
     MensagemRespondida,
     ContatoCard,
     ContatoModal,
-    AudioVisualizer,
-    VEmojiPicker
+    AudioVisualizer: () => import('components/AudioVisualizer.vue'),
+    EmojiPicker: () => import('components/EmojiPicker.vue')
   },
   methods: {
     openContactModal (contact) {

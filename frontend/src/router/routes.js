@@ -11,7 +11,6 @@ const routes = [
       { path: '/sessoes', name: 'sessoes', component: () => import('pages/sessaoWhatsapp/Index.vue') },
       { path: '/contatos', name: 'contatos', component: () => import('pages/contatos/Index.vue') },
       { path: '/usuarios', name: 'usuarios', component: () => import('pages/usuarios/Index.vue') },
-      { path: '/auto-resposta', name: 'auto-resposta', component: () => import('pages/fluxoAutoResposta/Index.vue') },
       { path: '/mensagens-rapidas', name: 'mensagens-rapidas', component: () => import('pages/mensagensRapidas/Index.vue') },
       { path: '/filas', name: 'filas', component: () => import('pages/filas/Index.vue') },
       { path: '/configuracoes', name: 'configuracoes', component: () => import('pages/configuracoes/Index.vue') },

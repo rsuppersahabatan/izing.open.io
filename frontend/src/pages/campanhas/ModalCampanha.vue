@@ -147,14 +147,7 @@
                   self="bottom middle"
                   :offset="[5, 40]"
                 >
-                  <VEmojiPicker
-                    style="width: 40vw"
-                    :showSearch="false"
-                    :emojisByRow="20"
-                    labelSearch="Localizar..."
-                    lang="pt-BR"
-                    @select="(v) => onInsertSelectEmoji(v, 'message1')"
-                  />
+                  <EmojiPicker @select="(v) => onInsertSelectEmoji(v, 'message1')" />
                 </q-menu>
               </q-btn>
             </div>
@@ -218,14 +211,7 @@
                   self="bottom middle"
                   :offset="[5, 40]"
                 >
-                  <VEmojiPicker
-                    style="width: 40vw"
-                    :showSearch="false"
-                    :emojisByRow="20"
-                    labelSearch="Localizar..."
-                    lang="pt-BR"
-                    @select="(v) => onInsertSelectEmoji(v, 'message2')"
-                  />
+                  <EmojiPicker @select="(v) => onInsertSelectEmoji(v, 'message2')" />
                 </q-menu>
               </q-btn>
             </div>
@@ -289,14 +275,7 @@
                   self="bottom middle"
                   :offset="[5, 40]"
                 >
-                  <VEmojiPicker
-                    style="width: 40vw"
-                    :showSearch="false"
-                    :emojisByRow="20"
-                    labelSearch="Localizar..."
-                    lang="pt-BR"
-                    @select="(v) => onInsertSelectEmoji(v, 'message3')"
-                  />
+                  <EmojiPicker @select="(v) => onInsertSelectEmoji(v, 'message3')" />
                 </q-menu>
               </q-btn>
             </div>
@@ -399,7 +378,6 @@
 
 <script>
 import { required } from 'vuelidate/lib/validators'
-import { VEmojiPicker } from 'v-emoji-picker'
 import axios from 'axios'
 import cMolduraCelular from 'src/components/cMolduraCelular'
 import MensagemChat from 'src/pages/atendimento/MensagemChat'
@@ -420,7 +398,7 @@ const downloadImageCors = axios.create({
 
 export default {
   name: 'ModalCampanha',
-  components: { VEmojiPicker, cMolduraCelular, MensagemChat },
+  components: { EmojiPicker: () => import('components/EmojiPicker.vue'), cMolduraCelular, MensagemChat },
   props: {
     modalCampanha: {
       type: Boolean,

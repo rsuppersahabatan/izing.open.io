@@ -45,14 +45,7 @@
                 self="bottom middle"
                 :offset="[5, 40]"
               >
-                <VEmojiPicker
-                  style="width: 40vw"
-                  :showSearch="false"
-                  :emojisByRow="20"
-                  labelSearch="Localizar..."
-                  lang="pt-BR"
-                  @select="onInsertSelectEmoji"
-                />
+                <EmojiPicker @select="(v) => onInsertSelectEmoji(v)" />
               </q-menu>
             </q-btn>
           </div>
@@ -95,12 +88,11 @@
 </template>
 
 <script>
-import { VEmojiPicker } from 'v-emoji-picker'
 
 import { CriarMensagemRapida, AlterarMensagemRapida } from 'src/service/mensagensRapidas'
 export default {
   name: 'ModalMensagemRapida',
-  components: { VEmojiPicker },
+  components: { EmojiPicker: () => import('components/EmojiPicker.vue') },
   props: {
     modalMensagemRapida: {
       type: Boolean,

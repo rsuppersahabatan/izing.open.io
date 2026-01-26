@@ -27,14 +27,7 @@
                 self="bottom middle"
                 :offset="[5, 40]"
               >
-                <VEmojiPicker
-                  style="width: 40vw"
-                  :showSearch="false"
-                  :emojisByRow="20"
-                  labelSearch="Localizar..."
-                  lang="pt-BR"
-                  @select="onInsertSelectEmoji"
-                />
+                <EmojiPicker @select="(v) => onInsertSelectEmoji(v)" />
               </q-menu>
             </q-btn>
             <q-btn
@@ -86,11 +79,10 @@
 </template>
 
 <script>
-import { VEmojiPicker } from 'v-emoji-picker'
 
 export default {
   name: 'MessageField',
-  components: { VEmojiPicker },
+  components: { EmojiPicker: () => import('components/EmojiPicker.vue') },
   data () {
     return {
       variaveis: [
