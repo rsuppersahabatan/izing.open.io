@@ -175,58 +175,6 @@
       <div class="row q-px-md">
         <q-item tag="label" class="col-8" v-ripple>
           <q-item-section>
-            <q-item-label>Token ConnectionHub - adquira em - https://loja.whazing.com.br</q-item-label>
-          </q-item-section>
-          <q-tooltip content-class="bg-negative text-bold">
-            Token ConnectionHub - adquira em - https://loja.whazing.com.br
-          </q-tooltip>
-        </q-item>
-
-        <div class="col-4">
-          <q-input
-            class="blur-effect"
-            v-model="ConnectionHubToken"
-            type="textarea"
-            autogrow
-            dense
-            outlined
-            label="Seu Token ConnectionHub"
-            input-style="min-height: 6vh;"
-            debounce="700"
-            @input="atualizarConfiguracao('ConnectionHubToken')"
-          />
-        </div>
-      </div>
-
-      <div class="row q-px-md">
-        <q-item tag="label" class="col-8" v-ripple>
-          <q-item-section>
-            <q-item-label>Token NotificaME - Use cupom whazing - https://hub.whazing.com.br</q-item-label>
-          </q-item-section>
-          <q-tooltip content-class="bg-negative text-bold">
-            Token NotificaME - Use cupom whazing - https://hub.whazing.com.br
-          </q-tooltip>
-        </q-item>
-
-        <div class="col-4">
-          <q-input
-            class="blur-effect"
-            v-model="hubToken"
-            type="textarea"
-            autogrow
-            dense
-            outlined
-            label="Seu Token Notificame"
-            input-style="min-height: 6vh;"
-            debounce="700"
-            @input="atualizarConfiguracao('hubToken')"
-          />
-        </div>
-       </div>
-
-      <div class="row q-px-md">
-        <q-item tag="label" class="col-8" v-ripple>
-          <q-item-section>
             <q-item-label>Transcrição de audio - Token OpenAi</q-item-label>
           </q-item-section>
         </q-item>

@@ -15,6 +15,13 @@
               label="Adicionar"
               @click="modalWhatsapp = true"
             />
+            <q-btn
+              rounded
+              color="black"
+              icon="mdi-cog"
+              label="Token Hub"
+              @click="modalHub = true"
+            />
           </div>
         </q-card-section>
       </q-card>
@@ -177,6 +184,7 @@
         </q-card>
       </template>
     </div>
+    <ModalHub v-model="modalHub" />
     <ModalQrCode
       :abrirModalQR.sync="abrirModalQR"
       :channel="cDadosWhatsappSelecionado"
@@ -203,6 +211,7 @@ import { ListarFilas } from 'src/service/filas'
 import { format, parseISO } from 'date-fns'
 import pt from 'date-fns/locale/pt-BR/index'
 import ModalQrCode from './ModalQrCode'
+import ModalHub from './ModalHub'
 import { mapGetters } from 'vuex'
 import ModalWhatsapp from './ModalWhatsapp'
 import ItemStatusChannel from './ItemStatusChannel'
@@ -215,7 +224,8 @@ export default {
   components: {
     ModalQrCode,
     ModalWhatsapp,
-    ItemStatusChannel
+    ItemStatusChannel,
+    ModalHub
   },
   data () {
     return {
@@ -223,6 +233,7 @@ export default {
       loading: false,
       userLogado,
       isAdmin: false,
+      modalHub: false,
       abrirModalQR: false,
       modalWhatsapp: false,
       whatsappSelecionado: {},
