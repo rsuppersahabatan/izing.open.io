@@ -1,22 +1,19 @@
-import { join } from "path";
+import { join, extname } from "path";
 import { promisify } from "util";
-import { writeFile } from "fs";
 import fs from "fs";
 
 import { Message as WbotMessage } from "whatsapp-web.js";
 import Contact from "../../../models/Contact";
 import Ticket from "../../../models/Ticket";
-
-
 import Message from "../../../models/Message";
+
 import VerifyQuotedMessage from "./VerifyQuotedMessage";
 import CreateMessageService from "../../MessageServices/CreateMessageService";
 import { logger } from "../../../utils/logger";
 
-import ffmpeg from "fluent-ffmpeg";
-import { path as ffmpegPath } from "@ffmpeg-installer/ffmpeg";
+import convertToMp3 from "../../../helpers/convertToMp3";
 
-const writeFileAsync = promisify(writeFile);
+const writeFileAsync = promisify(fs.writeFile);
 
 const VerifyMediaMessage = async (
   msg: WbotMessage,
@@ -24,7 +21,6 @@ const VerifyMediaMessage = async (
   contact: Contact
 ): Promise<Message | void> => {
   const quotedMsg = await VerifyQuotedMessage(msg);
-
   const media = await msg.downloadMedia();
 
   if (!media) {
@@ -34,54 +30,27 @@ const VerifyMediaMessage = async (
 
   if (!media.filename) {
     const ext = media.mimetype.split("/")[1].split(";")[0];
-    media.filename = `${new Date().getTime()}.${ext}`;
+    media.filename = `${Date.now()}.${ext}`;
   } else {
-    const originalFilename = media.filename ? `-${media.filename}` : "";
-    // Always write a random filename
-    media.filename = `${new Date().getTime()}${originalFilename}`;
+    media.filename = `${Date.now()}-${media.filename}`;
   }
 
-  const inputFile = `./public/${media.filename}`;
-  let outputFile: string;
+  const publicDir = join(__dirname, "..", "..", "..", "..", "public");
+  const inputFile = join(publicDir, media.filename);
 
   try {
-    await writeFileAsync(
-      join(__dirname, "..", "..", "..", "..", "public", media.filename),
-      media.data,
-      "base64"
-    )
-      .then(() => {
+    await writeFileAsync(inputFile, media.data, "base64");
 
-        if (inputFile.endsWith(".ogg")) {
-          outputFile = inputFile.replace(".ogg", ".mp3");
-        } else {
-          return;
-        }
+    if (extname(inputFile).toLowerCase() === ".ogg") {
+      const outputFile = await convertToMp3(inputFile);
 
-        return new Promise<void>((resolve, reject) => {
-          ffmpeg(inputFile)
-            .toFormat("mp3")
-            .save(outputFile)
-            .on("end", () => {
-              resolve();
-            })
-            .on("error", (err: any) => {
-              reject(err);
-            });
-        });
-      })
-      .then(() => {
-        if (outputFile) {
-          fs.unlinkSync(inputFile);
-          media.filename = outputFile.split('/').pop();
-        }
-      })
-      .catch(err => {
-        console.error("Ocorreu um erro:", err);
-        // Trate o erro de acordo com sua lógica de aplicativo.
-      });
-  } catch (err: any) {
-    logger.error(err);
+      fs.unlinkSync(inputFile);
+
+      media.filename = outputFile.split("/").pop()!;
+    }
+  } catch (err) {
+    logger.error("Erro ao processar mídia:", err);
+    return;
   }
 
   const messageData = {
@@ -100,14 +69,16 @@ const VerifyMediaMessage = async (
 
   await ticket.update({
     lastMessage: msg.body,
-    lastMessageAt: new Date().getTime(),
+    lastMessageAt: Date.now(),
     answered: msg.fromMe || false
   });
+
   const newMessage = await CreateMessageService({
     messageData,
     tenantId: ticket.tenantId
   });
 
+  // eslint-disable-next-line consistent-return
   return newMessage;
 };
 
