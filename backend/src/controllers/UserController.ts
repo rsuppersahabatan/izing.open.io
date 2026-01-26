@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { getIO } from "../libs/socket";
 
-import CheckSettingsHelper from "../helpers/CheckSettings";
 import AppError from "../errors/AppError";
 
 import CreateUserService from "../services/UserServices/CreateUserService";
@@ -11,7 +10,7 @@ import ShowUserService from "../services/UserServices/ShowUserService";
 import DeleteUserService from "../services/UserServices/DeleteUserService";
 import UpdateUserConfigsService from "../services/UserServices/UpdateUserConfigsService";
 
-import Tenant from "../models/Tenant"; 
+import Tenant from "../models/Tenant";
 
 type IndexQuery = {
   searchParam: string;
@@ -47,23 +46,17 @@ export const store = async (req: Request, res: Response): Promise<Response> => {
   const { tenantId } = req.user;
   const { email, password, name, profile } = req.body;
   const { users } = await ListUsersService({ tenantId });
-  
+
   if (users.length >= Number(process.env.USER_LIMIT)) {
           throw new AppError("ERR_USER_LIMIT_USER_CREATION", 400);
   }
- 
+
   const maxUsers = await getTenantMaxUsers(String(tenantId));
   if (users.length >= maxUsers) {
     throw new AppError("ERR_USER_LIMIT_USER_CREATION", 400);
   }
 
-  else if (
-    
-    req.url === "/signup" &&
-    (await CheckSettingsHelper("userCreation")) === "disabled"
-  ) {
-    throw new AppError("ERR_USER_CREATION_DISABLED", 403);
-  } else if (req.url !== "/signup" && req.user.profile !== "admin") {
+ else if (req.url !== "/signup" && req.user.profile !== "admin") {
     throw new AppError("ERR_NO_PERMISSION", 403);
   }
 
