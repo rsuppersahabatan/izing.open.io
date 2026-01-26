@@ -11,7 +11,8 @@
     "fix": "eslint --ext .js,.vue ./ --fix",
     "start": "pm2 start server.js --name izing-frontend",
     "stop": "pm2 stop server.js --name izing-frontend",
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider && npx quasar build -P -m pwa"
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && npx quasar build -P -m pwa",
+    "dev": "export NODE_OPTIONS=--openssl-legacy-provider && npx quasar dev"
   },
   "dependencies": {
     "@quasar/cli": "^2.4.0",
