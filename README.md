@@ -2,7 +2,9 @@
 
 [Fork do projeto ldurans](https://github.com/ldurans/izing.open.io)
 
-# Izing com painel SaaS - Hub NotificaMe(facebook e instagram) - Wavoip
+# Izing com painel SaaS - Conection Hub e Hub NotificaMe(facebook e instagram) - Wavoip
+
+Adquirir canal Conection Hub: https://loja.whazing.com.br/
 
 Cupom desconto Notifica Me - cadastre pelo link https://hub.whazing.com.br
 
