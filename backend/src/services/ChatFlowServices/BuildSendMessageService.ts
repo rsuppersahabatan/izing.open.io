@@ -5,6 +5,7 @@ import Ticket from "../../models/Ticket";
 import Message from "../../models/Message";
 import socketEmit from "../../helpers/socketEmit";
 import SendMessageSystemProxy from "../../helpers/SendMessageSystemProxy";
+import CreateMessageSystemService from "../MessageServices/CreateMessageSystemService";
 
 interface MessageData {
   id?: string;
@@ -78,7 +79,7 @@ const BuildSendMessageService = async ({
 
       const message = {
         ...messageData,
-        body: msg.data.name,
+        body: msg.data.message || "",
         mediaName: urlSplit[urlSplit.length - 1],
         mediaUrl: urlSplit[urlSplit.length - 1],
         mediaType: msg.data.type
@@ -139,61 +140,19 @@ const BuildSendMessageService = async ({
         payload: messageCreated
       });
     } else {
-      // Alter template message
-      msg.data.message = pupa(msg.data.message || "", {
-        // greeting: será considerado conforme data/hora da mensagem internamente na função pupa
-        protocol: ticket.protocol,
-        name: ticket.contact.name
-      });
+      const messageData = {
+        body: msg.data.message || "",
+        fromMe: true,
+        read: true,
+        sendType: "bot"
+      };
 
-      const messageSent = await SendMessageSystemProxy({
+      await CreateMessageSystemService({
+        msg: messageData,
+        tenantId: ticket.tenantId,
         ticket,
-        messageData: {
-          ...messageData,
-          body: msg.data.message
-        },
-        media: null,
-        userId: null
-      });
-
-      const msgCreated = await Message.create({
-        ...messageData,
-        ...messageSent,
-        id: messageData.id,
-        messageId: messageSent.id?.id || messageSent.messageId || null,
-        mediaType: "bot"
-      });
-
-      const messageCreated = await Message.findByPk(msgCreated.id, {
-        include: [
-          {
-            model: Ticket,
-            as: "ticket",
-            where: { tenantId },
-            include: ["contact"]
-          },
-          {
-            model: Message,
-            as: "quotedMsg",
-            include: ["contact"]
-          }
-        ]
-      });
-
-      if (!messageCreated) {
-        throw new Error("ERR_CREATING_MESSAGE_SYSTEM");
-      }
-
-      await ticket.update({
-        lastMessage: messageCreated.body,
-        lastMessageAt: new Date().getTime(),
-        answered: true
-      });
-
-      socketEmit({
-        tenantId,
-        type: "chat:create",
-        payload: messageCreated
+        sendType: messageData.sendType,
+        status: "pending"
       });
     }
   } catch (error) {
