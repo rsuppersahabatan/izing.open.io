@@ -20,6 +20,42 @@ https://wavoip.com/
 whazing
 ```
 
+🚀 Whazing & Hostear: Sua VPS no Brasil com Teste Grátis!
+Olá! A Whazing e a Hostear se uniram para trazer o que há de melhor em servidores VPS no Brasil, com uma condição que você não pode ignorar.
+
+🔥 TESTE GRATUITO POR 7 DIAS
+Isso mesmo! Você testa toda a performance por uma semana sem pagar nada.
+
+❌ Sem dados de cartão de crédito.
+
+❌ Sem compromisso financeiro inicial.
+
+Gostou do serviço? É só assinar após o período de teste!
+
+💰 DESCONTOS EXCLUSIVOS
+
+Mensal: 30% OFF no 1º mês (Cupom: WHAZING).
+
+Recorrente: 10% OFF todo mês a partir do 2º mês (Cupom: WHAZING10).
+
+Anual: 50% OFF em novas aquisições (O melhor custo-benefício!).
+
+👉 Comece seu teste agora: hostear.com.br/whazing
+
+Nota: Para validar o desconto de 10%, lembre-se de aplicar o cupom WHAZING10 no momento do pagamento da fatura.
+
+Hostear & Whazing: Potência brasileira ao seu alcance! ⚡
+
+## Recomendação de VPS boa e barata
+
+-  [Powerful cloud VPS & Web hosting.](https://control.peramix.com/?affid=58)
+
+- Cupom 25% desconto "WHAZING"
+
+```bash
+WHAZING
+```
+
 Um sistema para gestão de atendimento multicanais centralizado.
 
 usuario Painel SaaS: super@izing.io senha: 123456
@@ -73,16 +109,6 @@ sh update-izing
 A utilização desta ferramenta é feita por sua conta e risco. O código é aberto e todos podem contribuir.
 
 Este projeto não é afiliado, associado, autorizado, endossado por, ou de qualquer forma oficialmente ligado à WhatsApp, ou a qualquer uma das suas filiais ou afiliadas. O website oficial da WhatsApp pode ser encontrado em <https://whatsapp.com>. "WhatsApp", bem como nomes, marcas, emblemas e imagens relacionadas são marcas registadas dos seus respectivos proprietários.
-
-## Recomendação de VPS boa e barata
-
--  [Powerful cloud VPS & Web hosting.](https://control.peramix.com/?affid=58)
-
-- Cupom 25% desconto "WHAZING"
-
-```bash
-WHAZING
-```
 
 #### Curtiu? Apoie o projeto!! Com sua doação, será possível continuar com as atualizações. Segue QR code (PIX)  
 
